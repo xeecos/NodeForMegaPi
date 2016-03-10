@@ -1,0 +1,27 @@
+{
+  "name": "megapi",
+  "version": "0.0.1",
+  "description": "node for megapi firmware",
+  "main": "./megapi",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ZeroPiProject/NodeForMegaPi"
+  },
+  "keywords": [
+    "mega pi",
+    "raspberry pi",
+    "arduino"
+  ],
+ "dependencies" :
+  { 
+	"serialport" : "=2.0.2"
+  },
+  "author": "ander@makeblock.cc",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ZeroPiProject/NodeForMegaPi/issues"
+  }
+}
