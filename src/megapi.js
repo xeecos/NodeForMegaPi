@@ -50,12 +50,12 @@ function MegaPi(onStart)
                 break;
 		   case 2:
 		   {
-                  value = floatFromBytes([buffer[position],buffer[position+1],buffer[position+2],buffer[position+3]]);
+                  value = getFloatFromBytes([buffer[position],buffer[position+1],buffer[position+2],buffer[position+3]]);
                    }
                 break;
 		   case 3:
 		   {
-                  value = shortFromBytes([buffer[position],buffer[position+1]]);
+                  value = getShortFromBytes([buffer[position],buffer[position+1]]);
                    }
                 break;
                  }
@@ -97,7 +97,6 @@ MegaPi.prototype.pwmWrite = function(pin,pwm){
   var id = 0;
   var action = 2;
   var device = 0x20;
-  selectors["callback_"+id] = callback;
   write([id,action,device,pin,pwm]);
 }
 MegaPi.prototype.digitalRead = function(pin,callback){
@@ -114,12 +113,170 @@ MegaPi.prototype.analogRead = function(pin,callback){
   selectors["callback_"+id] = callback;
   write([id,action,device,pin]);
 }
+MegaPi.prototype.ultrasonicSensorRead = function(port,callback){
+  var action = 1;
+  var device = 1;
+  var id = ((port<<4)+device)&0xff;
+  selectors["callback_"+id] = callback;
+  write([id,action,device,port]);
+}
+MegaPi.prototype.lightSensorRead = function(port,callback){
+  var action = 1;
+  var device = 3;
+  var id = ((port<<4)+device)&0xff;
+  selectors["callback_"+id] = callback;
+  write([id,action,device,port]);
+}
+MegaPi.prototype.soundSensorRead = function(port,callback){
+  var action = 1;
+  var device = 7;
+  var id = ((port<<4)+device)&0xff;
+  selectors["callback_"+id] = callback;
+  write([id,action,device,port]);
+}
+MegaPi.prototype.pirMotionSensorRead = function(port,callback){
+  var action = 1;
+  var device = 15;
+  var id = ((port<<4)+device)&0xff;
+  selectors["callback_"+id] = callback;
+  write([id,action,device,port]);
+}
+MegaPi.prototype.potentiometerRead = function(port,callback){
+  var action = 1;
+  var device = 4;
+  var id = ((port<<4)+device)&0xff;
+  selectors["callback_"+id] = callback;
+  write([id,action,device,port]);
+}
+MegaPi.prototype.lineFollowerRead = function(port,callback){
+  var action = 1;
+  var device = 17;
+  var id = ((port<<4)+device)&0xff;
+  selectors["callback_"+id] = callback;
+  write([id,action,device,port]);
+}
+MegaPi.prototype.limitSwitchRead = function(port,callback){
+  var action = 1;
+  var device = 21;
+  var id = ((port<<4)+device)&0xff;
+  selectors["callback_"+id] = callback;
+  write([id,action,device,port]);
+}
+MegaPi.prototype.temperatureRead = function(port,callback){
+  var action = 1;
+  var device = 2;
+  var id = ((port<<4)+device)&0xff;
+  selectors["callback_"+id] = callback;
+  write([id,action,device,port]);
+}
+MegaPi.prototype.touchSensorRead = function(port,callback){
+  var action = 1;
+  var device = 15;
+  var id = ((port<<4)+device)&0xff;
+  selectors["callback_"+id] = callback;
+  write([id,action,device,port]);
+}
+MegaPi.prototype.humitureSensorRead = function(port,type,callback){
+  var action = 1;
+  var device = 23;
+  var id = ((port<<4)+device)&0xff;
+  selectors["callback_"+id] = callback;
+  write([id,action,device,port,type]);
+}
+MegaPi.prototype.joystickRead = function(port,axis,callback){
+  var action = 1;
+  var device = 5;
+  var id = ((port<<4)+device)&0xff;
+  selectors["callback_"+id] = callback;
+  write([id,action,device,port,axis]);
+}
+MegaPi.prototype.gasSensorRead = function(port,callback){
+  var action = 1;
+  var device = 25;
+  var id = ((port<<4)+device)&0xff;
+  selectors["callback_"+id] = callback;
+  write([id,action,device,port]);
+}
+MegaPi.prototype.buttonRead = function(port,callback){
+  var action = 1;
+  var device = 22;
+  var id = ((port<<4)+device)&0xff;
+  selectors["callback_"+id] = callback;
+  write([id,action,device,port]);
+}
+MegaPi.prototype.gyroRead = function(axis,callback){
+  var action = 1;
+  var device = 6;
+  var id = ((port<<4)+device)&0xff;
+  selectors["callback_"+id] = callback;
+  write([id,action,device,port,axis]);
+}
 MegaPi.prototype.dcMotorRun = function(port,speed){
   var id = 0;
   var action = 2;
   var device = 0xa;
-  var spd = getShortBytes(speed);
+  var spd = getBytesFromShort(speed);
   write([id,action,device,port,spd[1],spd[0]]);
+}
+MegaPi.prototype.dcMotorStop = function(port){
+  self.dcMotorRun(port,0);
+}
+MegaPi.prototype.servoRun = function(pin,angle){
+  var id = 0;
+  var action = 2;
+  var device = 0x21;
+  write([id,action,device,pin+60,angle]);
+}
+MegaPi.prototype.encoderMotorRun = function(slot,speed){
+  var id = 0;
+  var action = 2;
+  var device = 62;
+  var spd = getBytesFromShort(speed);
+  write([id,action,device,slot,spd[1],spd[0]]);
+}
+MegaPi.prototype.encoderMotorPosition = function(port,callback){
+  var id = 0;
+  var action = 2;
+  var device = 61;
+  var spd = getBytesFromShort(speed);
+  write([id,action,device,slot,1]);
+}
+MegaPi.prototype.encoderMotorSpeed = function(port,callback){
+  var id = 0;
+  var action = 2;
+  var device = 61;
+  var spd = getBytesFromShort(speed);
+  write([id,action,device,slot,2]);
+}
+MegaPi.prototype.stepperMotorMoveTo = function(slot,speed,position,callback){
+  var id = 0;
+  var action = 2;
+  var device = 40;
+  var spd = getBytesFromShort(speed);
+  var pos = getBytesFromShort(position);
+  write([id,action,device,slot,spd[1],spd[0],pos[1],pos[0]]);
+}
+MegaPi.prototype.rgbledDisplay = function(port,slot,index,r,g,b){
+  var id = 0;
+  var action = 2;
+  var device = 8;
+  write([id,action,device,port,slot,index,r,g,b]);
+}
+MegaPi.prototype.sevenSegmentDisplay = function(port,value){
+  var id = 0;
+  var action = 2;
+  var device = 9;
+  var v = getFloatBytes(value);
+  write([id,action,device,port,v[3],v[2],v[1],v[0]]);
+}
+MegaPi.prototype.ledMatrixDisplay = function(port){
+
+}
+MegaPi.prototype.shutterDo = function(port,method){
+  var id = 0;
+  var action = 2;
+  var device = 20;
+  write([id,action,device,port,method]);
 }
 var maxLinearSpeed = 200;
 MegaPi.prototype.mecanumRun = function(xSpeed,ySpeed,aSpeed){
@@ -140,25 +297,7 @@ MegaPi.prototype.mecanumRun = function(xSpeed,ySpeed,aSpeed){
   self.dcMotorRun(9,spd3);
   self.dcMotorRun(10,-spd4);
 }
-MegaPi.prototype.dcMotorStop = function(port){
-  self.dcMotorRun(port,0);
-}
-MegaPi.prototype.servoRun = function(pin,angle){
-  var id = 0;
-  var action = 2;
-  var device = 0x21;
-  write([id,action,device,pin+60,angle]);
-}
-function getShortBytes( v ){
-    var bytes = [];
-    var i = 2;
-    do {
-      bytes[--i] = v & (255);
-      v = v>>8;
-    }while ( i )
-    return bytes;
-}
-function shortFromBytes( v ){
+function getShortFromBytes( v ){
     var val = 0;
     for (var i = 0; i < v.length; ++i) {        
         val += v[i];        
@@ -168,7 +307,7 @@ function shortFromBytes( v ){
     }
     return val;
 }
-function floatFromBytes(v){
+function getFloatFromBytes(v){
   var buf = new ArrayBuffer(4);
   var i = new Uint8Array(buf);
   i[0] = v[0];
@@ -177,5 +316,19 @@ function floatFromBytes(v){
   i[3] = v[3];
   var f = new Float32Array(buf);
   return f[0];
+}
+function getBytesFromShort( v ){
+  var buf = new ArrayBuffer(2);
+  var s = new Int16Array(buf);
+  s[0] = v;
+  var i = new Uint8Array(buf);
+  return i;
+}
+function getBytesFromFloat(v){
+  var buf = new ArrayBuffer(4);
+  var f = new Float32Array(buf);
+  f[0] = v;
+  var i = new Uint8Array(buf);
+  return i;
 }
 exports.MegaPi = MegaPi;
