@@ -221,11 +221,11 @@ MegaPi.prototype.dcMotorRun = function(port,speed){
 MegaPi.prototype.dcMotorStop = function(port){
   self.dcMotorRun(port,0);
 }
-MegaPi.prototype.servoRun = function(pin,angle){
+MegaPi.prototype.servoRun = function(port,slot,angle){
   var id = 0;
   var action = 2;
-  var device = 0x21;
-  write([id,action,device,pin+60,angle]);
+  var device = 11;
+  write([id,action,device,port,slot,angle]);
 }
 MegaPi.prototype.encoderMotorRun = function(slot,speed){
   var id = 0;
