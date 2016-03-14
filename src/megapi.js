@@ -269,8 +269,11 @@ MegaPi.prototype.sevenSegmentDisplay = function(port,value){
   var v = getFloatBytes(value);
   write([id,action,device,port,v[3],v[2],v[1],v[0]]);
 }
-MegaPi.prototype.ledMatrixDisplay = function(port){
-
+MegaPi.prototype.ledMatrixDisplay = function(port,buffer){
+  var id = 0;
+  var action = 2;
+  var device = 41;
+  write([id,action,device,port].concat(buffer));
 }
 MegaPi.prototype.shutterDo = function(port,method){
   var id = 0;
